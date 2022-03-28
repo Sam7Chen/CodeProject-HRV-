@@ -1,3 +1,4 @@
+
 import UIKit
 import HealthKit
 class ViewController: UIViewController {
@@ -7,7 +8,7 @@ class ViewController: UIViewController {
     let health = HKHealthStore()
     
     func getPredicate() -> NSPredicate? {
-        let startDate = Date().addingTimeInterval(-12*60*60)
+        let startDate = Date().addingTimeInterval(-72*60*60)
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: [])
         return predicate
     }
@@ -44,6 +45,9 @@ class ViewController: UIViewController {
      
     }
 
+
+    
+    
     
 
     override func viewDidLoad() {
@@ -60,11 +64,24 @@ class ViewController: UIViewController {
                     self.getHeartRate(completion :{ (results) in
                       if let results = results {
                           let unit = HKUnit.second()
+                          var hrvDataArray = [Double]()
+                          var hrvDataDict : [Data:Double]
                             var value : Double
+                            var startDateTime : Date
                             for p in results as! [HKQuantitySample]{
                                 value = p.quantity.doubleValue(for: unit)
-                                print("心率變異為: \(value) 秒")
+                                startDateTime = p.startDate
+                                hrvDataArray.append(value)
+                                // Dict
+                                var updateDict = hrvDataDict.updateValue(value, forKey: startDateTime)
+                               
+                                print("時間為: \(startDateTime) ")
+                                
                             }
+                          for result1 in hrvDataArray{
+                              print("心率變異為: \(result1*1000) 秒")
+                          }
+                          
                           }
                     })
                     
