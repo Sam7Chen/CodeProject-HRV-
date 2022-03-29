@@ -1,0 +1,172 @@
+import UIKit
+import Charts
+import HealthKit
+import TinyConstraints
+
+class ViewController: UIViewController, ChartViewDelegate {
+    
+        lazy var lineChartView : LineChartView = {
+        let chartview = LineChartView()
+            chartview.backgroundColor = .systemGray
+            
+            chartview.rightAxis.enabled = false
+            let yAxis = chartview.leftAxis
+            yAxis.labelFont = .boldSystemFont(ofSize: 12)
+            yAxis.setLabelCount(6, force: false)
+            yAxis.labelTextColor = .white
+            yAxis.axisLineColor = .brown
+            
+            chartview.xAxis.labelPosition = .bottom
+            chartview.xAxis.labelFont = .boldSystemFont(ofSize: 12)
+            chartview.xAxis.setLabelCount(6, force: false)
+            chartview.xAxis.labelTextColor = .white
+            chartview.xAxis.axisLineColor = .brown
+            
+            chartview.animate(xAxisDuration: 1)
+            
+            
+        return chartview
+        }()
+    
+    
+    
+    let health = HKHealthStore()
+    
+    func getPredicate() -> NSPredicate? {
+        let startDate = Date().addingTimeInterval(-72*60*60)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: [])
+        return predicate
+    }
+    
+    func dataTypesToShare() -> Set<HKSampleType>?{
+        var set = Set<HKSampleType>()
+        set.insert(HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN)!)
+        return set
+    }
+     
+    func dataTypesToRead() -> Set<HKObjectType>?{
+        var set = Set<HKObjectType>()
+        set.insert(HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN)!)
+        return set
+    }
+
+    
+    
+    func getHeartRate(completion: @escaping (_ results :[HKSample]?) -> Void){
+        let type = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN)
+        let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+        
+        let query = HKSampleQuery(
+            sampleType: type!,
+            predicate: getPredicate(),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [sort])
+        { (query, results, error) in
+            if error == nil{
+                completion(results)
+            }
+        }
+        health.execute(query)
+     
+    }
+
+    
+    
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        view.addSubview(lineChartView)
+        lineChartView.centerInSuperview()
+        lineChartView.width(to: view)
+        lineChartView.heightToWidth(of: view)
+        setData()
+        getChatDataFromHealthKit()
+
+    }
+    
+    
+    
+    
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        print(entry)
+    }
+    func setData() {
+        let set1 = LineChartDataSet(entries: yValues, label: "HRV Rate")
+        
+        set1.drawCirclesEnabled = false
+        set1.mode = .cubicBezier
+        set1.lineWidth = 3
+        set1.setColor(.white)
+        
+        
+        let data = LineChartData(dataSet: set1)
+        //data.setDrawValues(false)
+        lineChartView.data = data
+    }
+    
+    let yValues : [ChartDataEntry] = [
+        ChartDataEntry(x: 0.0, y: 10.0),
+        ChartDataEntry(x: 1.0, y: 5.0),
+        ChartDataEntry(x: 2.0, y: 16.0),
+        ChartDataEntry(x: 3.0, y: 3.0),
+        ChartDataEntry(x: 4.0, y: 11.0),
+    
+    ]
+    
+   
+        func getChatDataFromHealthKit(){
+            
+            
+            if HKHealthStore.isHealthDataAvailable(){
+                let shareType = self.dataTypesToShare()
+                let readType = self.dataTypesToRead()
+
+            health.requestAuthorization(toShare: shareType, read: readType, completion: { (success, error) in
+                if success{
+                    
+                    
+                    self.getHeartRate(completion :{ (results) in
+                      if let results = results {
+                          let unit = HKUnit.second()
+                          var hrvDataArray = [Double]()
+                          var hrvDataDict : [Date:Double] = [:]
+                            var value : Double
+                            var startDateTime : Date
+                            for p in results as! [HKQuantitySample]{
+                                value = p.quantity.doubleValue(for: unit)
+                                startDateTime = p.startDate
+                                hrvDataArray.append(value)
+                                // 資料寫入 Dict
+                                hrvDataDict [startDateTime] = value
+                               
+                                //print("時間為: \(startDateTime) ")
+                                
+                            }
+                         // for result1 in hrvDataArray{
+                         //     print("心率變異為: \(result1*1000) 秒")
+                        //    }
+                          // 印出 數據確保資料正確
+                          for items in hrvDataDict{
+                              print ("日期時間：\(items.key)，HRV 為 \(items.value*1000)秒")
+                          }
+                          
+                          }
+                    })
+                    
+                    
+                    
+                } else{
+                    print("授權失敗")
+                }
+                
+            })
+            
+          }
+        }
+    
+    
+    
+    
+    
+}
