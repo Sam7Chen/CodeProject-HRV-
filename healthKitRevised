@@ -1,0 +1,105 @@
+import UIKit
+import HealthKit
+class ViewController: UIViewController {
+    
+
+    
+    let health = HKHealthStore()
+    
+    func getPredicate() -> NSPredicate? {
+        let startDate = Date().addingTimeInterval(-72*60*60)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: [])
+        return predicate
+    }
+    
+    func dataTypesToShare() -> Set<HKSampleType>?{
+        var set = Set<HKSampleType>()
+        set.insert(HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN)!)
+        return set
+    }
+     
+    func dataTypesToRead() -> Set<HKObjectType>?{
+        var set = Set<HKObjectType>()
+        set.insert(HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN)!)
+        return set
+    }
+
+    
+    
+    func getHeartRate(completion: @escaping (_ results :[HKSample]?) -> Void){
+        let type = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN)
+        let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+        
+        let query = HKSampleQuery(
+            sampleType: type!,
+            predicate: getPredicate(),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [sort])
+        { (query, results, error) in
+            if error == nil{
+                completion(results)
+            }
+        }
+        health.execute(query)
+     
+    }
+
+
+    
+    
+    
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        if HKHealthStore.isHealthDataAvailable(){
+            let shareType = self.dataTypesToShare()
+            let readType = self.dataTypesToRead()
+            
+            health.requestAuthorization(toShare: shareType, read: readType, completion: { (success, error) in
+                if success{
+                    
+                    
+                    self.getHeartRate(completion :{ (results) in
+                      if let results = results {
+                          let unit = HKUnit.second()
+                          var hrvDataArray = [Double]()
+                          var hrvDataDict : [Date:Double] = [:]
+                            var value : Double
+                            var startDateTime : Date
+                            for p in results as! [HKQuantitySample]{
+                                value = p.quantity.doubleValue(for: unit)
+                                startDateTime = p.startDate
+                                hrvDataArray.append(value)
+                                // Dict
+                                hrvDataDict [startDateTime] = value
+                               
+                                //print("時間為: \(startDateTime) ")
+                                
+                            }
+                         // for result1 in hrvDataArray{
+                         //     print("心率變異為: \(result1*1000) 秒")
+                        //    }
+                          
+                          for items in hrvDataDict{
+                              print ("日期時間：\(items.key)，HRV 為 \(items.value*1000)秒")
+                          }
+                          
+                          }
+                    })
+                    
+                    
+                    
+                } else{
+                    print("授權失敗")
+                }
+                
+            })
+            
+        }
+    }
+    
+   
+
+}
+
