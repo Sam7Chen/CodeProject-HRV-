@@ -19,6 +19,7 @@ protocol HRVManagerDelegate: NSObjectProtocol {
 }
 
 class HRVManager: NSObject {
+    static let current = HRVManager()
     var delegate: HRVManagerDelegate? = nil
 
     let health = HKHealthStore()

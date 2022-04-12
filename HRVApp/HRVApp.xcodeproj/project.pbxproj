@@ -15,6 +15,8 @@
 		18A7EBBF27FC6100008B28E1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18A7EBBD27FC6100008B28E1 /* LaunchScreen.storyboard */; };
 		18A7EBC727FC6120008B28E1 /* HRVManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7EBC627FC6120008B28E1 /* HRVManager.swift */; };
 		18A7EBCB27FC650D008B28E1 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A7EBCA27FC650D008B28E1 /* HealthKit.framework */; };
+		18F262162803E1C1009E6873 /* FinalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F262152803E1C1009E6873 /* FinalVC.swift */; };
+		18F2621828053547009E6873 /* compareData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F2621728053547009E6873 /* compareData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		18A7EBC627FC6120008B28E1 /* HRVManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRVManager.swift; sourceTree = "<group>"; };
 		18A7EBC827FC650D008B28E1 /* HRVApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HRVApp.entitlements; sourceTree = "<group>"; };
 		18A7EBCA27FC650D008B28E1 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		18F262152803E1C1009E6873 /* FinalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalVC.swift; sourceTree = "<group>"; };
+		18F2621728053547009E6873 /* compareData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = compareData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,11 +71,13 @@
 				18A7EBB227FC60FE008B28E1 /* AppDelegate.swift */,
 				18A7EBB427FC60FE008B28E1 /* SceneDelegate.swift */,
 				18A7EBB627FC60FE008B28E1 /* ViewController.swift */,
+				18F262152803E1C1009E6873 /* FinalVC.swift */,
 				18A7EBB827FC60FE008B28E1 /* Main.storyboard */,
 				18A7EBBB27FC6100008B28E1 /* Assets.xcassets */,
 				18A7EBBD27FC6100008B28E1 /* LaunchScreen.storyboard */,
 				18A7EBC027FC6100008B28E1 /* Info.plist */,
 				18A7EBC627FC6120008B28E1 /* HRVManager.swift */,
+				18F2621728053547009E6873 /* compareData.swift */,
 			);
 			path = HRVApp;
 			sourceTree = "<group>";
@@ -155,6 +161,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18F262162803E1C1009E6873 /* FinalVC.swift in Sources */,
+				18F2621828053547009E6873 /* compareData.swift in Sources */,
 				18A7EBB727FC60FE008B28E1 /* ViewController.swift in Sources */,
 				18A7EBB327FC60FE008B28E1 /* AppDelegate.swift in Sources */,
 				18A7EBC727FC6120008B28E1 /* HRVManager.swift in Sources */,

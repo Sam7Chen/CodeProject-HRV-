@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController, HRVManagerDelegate , UITableViewDataSource, UITableViewDelegate {
-    let hm = HRVManager()
+    let hm = HRVManager.current
 
     @IBOutlet weak var tableView: UITableView!
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -45,19 +45,19 @@ class ViewController: UIViewController, HRVManagerDelegate , UITableViewDataSour
         // Do any additional setup after loading the view.
         hm.delegate = self
         
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: 50, y: 800))
-        // 數據帶入
-        path.addLine(to: CGPoint(x: 70, y: 700))
-        path.addLine(to: CGPoint(x: 200, y: 600))
-        
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.strokeColor = UIColor.blue.cgColor
-        shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.lineWidth = 3
-        
-        shapeLayer.path = path.cgPath
-        view.layer.addSublayer(shapeLayer)
+//        let path = UIBezierPath()
+//        path.move(to: CGPoint(x: 50, y: 800))
+//        // 數據帶入
+//        path.addLine(to: CGPoint(x: 70, y: 700))
+//        path.addLine(to: CGPoint(x: 200, y: 600))
+//
+//        let shapeLayer = CAShapeLayer()
+//        shapeLayer.strokeColor = UIColor.blue.cgColor
+//        shapeLayer.fillColor = UIColor.clear.cgColor
+//        shapeLayer.lineWidth = 3
+//
+//        shapeLayer.path = path.cgPath
+//        view.layer.addSublayer(shapeLayer)
         
     }
 
